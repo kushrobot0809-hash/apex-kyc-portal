@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { User, Building2, FileCheck, Package, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
+import { User, Building2, FileCheck, Package, ArrowRight, ArrowLeft, Loader2, Settings, Link } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import StepIndicator from "./StepIndicator";
 import PersonalInfoStep from "./PersonalInfoStep";
@@ -8,6 +9,14 @@ import OrganizationStep from "./OrganizationStep";
 import KYCDocumentsStep from "./KYCDocumentsStep";
 import SolutionsStep from "./SolutionsStep";
 import SuccessModal from "./SuccessModal";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const steps = [
   { title: "Personal Info", icon: <User className="w-6 h-6" /> },
@@ -30,11 +39,27 @@ interface FileData {
   passportPhoto: File | null;
 }
 
+const SOLUTION_LABELS: Record<string, string> = {
+  whiteLabel: "White-Label Casino Platform",
+  exchange: "Exchange Solutions",
+  casinoGames: "Casino Games (1,000+ titles)",
+  customGame: "Custom Game Development",
+  paymentGateway: "Payment Gateway Integration",
+  fraudDetection: "AI-Powered Fraud Detection",
+  exchangeApi: "Exchange API",
+  mobileApps: "White-Label Mobile Apps",
+  liveDealer: "Live Dealer Studio Setup",
+  regulatory: "Regulatory Consultation",
+  customPayment: "Custom Payment Integration",
+  devTeam: "Dedicated Development Team",
+};
+
 const KYCForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [webhookUrl, setWebhookUrl] = useState("");
 
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -169,18 +194,68 @@ const KYCForm = () => {
 
   const handleSubmit = async () => {
     if (validateStep(currentStep)) {
+      if (!webhookUrl) {
+        toast.error("Zapier Webhook URL required", {
+          description: "Please add your Zapier webhook URL in settings",
+        });
+        return;
+      }
+
       setIsSubmitting(true);
       
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      
-      setIsSubmitting(false);
-      setShowSuccess(true);
-      toast.success("KYC Submitted Successfully!", {
-        description: "We'll review your documents shortly",
-      });
+      // Get selected solutions
+      const selectedSolutions = Object.entries(solutions)
+        .filter(([_, selected]) => selected)
+        .map(([key]) => SOLUTION_LABELS[key] || key)
+        .join(", ");
+
+      // Prepare data for webhook
+      const webhookData = {
+        // Personal Info
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        // Organization
+        companyName: formData.companyName,
+        companyWebsite: formData.companyWebsite,
+        companyEmail: formData.companyEmail,
+        // KYC Documents
+        passportPhotoUploaded: files.passportPhoto ? "Yes" : "No",
+        passportPhotoName: files.passportPhoto?.name || "",
+        // Solutions
+        selectedSolutions: selectedSolutions,
+        // Metadata
+        submittedAt: new Date().toISOString(),
+        submittedFrom: window.location.origin,
+      };
+
+      try {
+        console.log("Sending data to Zapier:", webhookData);
+        
+        await fetch(webhookUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: "no-cors",
+          body: JSON.stringify(webhookData),
+        });
+
+        setIsSubmitting(false);
+        setShowSuccess(true);
+        toast.success("KYC Submitted Successfully!", {
+          description: "Data sent to Google Sheets via Zapier",
+        });
+      } catch (error) {
+        console.error("Error sending to webhook:", error);
+        setIsSubmitting(false);
+        toast.error("Failed to submit", {
+          description: "Please check your webhook URL and try again",
+        });
+      }
     } else {
-      toast.error("Please upload all required documents");
+      toast.error("Please select at least one solution");
     }
   };
 
@@ -221,7 +296,40 @@ const KYCForm = () => {
   return (
     <>
       <div className="w-full max-w-md mx-auto h-full flex flex-col">
-        <StepIndicator currentStep={currentStep} steps={steps} />
+        <div className="flex justify-between items-center mb-2">
+          <StepIndicator currentStep={currentStep} steps={steps} />
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Link className="h-4 w-4" />
+                  Zapier Webhook Settings
+                </DialogTitle>
+                <DialogDescription>
+                  Enter your Zapier webhook URL to save form data to Google Sheets
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Webhook URL</label>
+                  <Input
+                    placeholder="https://hooks.zapier.com/hooks/catch/..."
+                    value={webhookUrl}
+                    onChange={(e) => setWebhookUrl(e.target.value)}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Create a Zap with "Webhooks by Zapier" trigger and "Google Sheets" action to save data automatically.
+                </p>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
 
         <div className="bg-card rounded-xl shadow-xl p-3 md:p-4 hover-lift flex-1 flex flex-col min-h-0">
           {currentStep === 0 && (
