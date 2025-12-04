@@ -10,7 +10,7 @@ const Index = () => {
         <div className="absolute bottom-0 left-0 w-60 h-60 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "-3s" }} />
       </div>
 
-      <div className="relative flex-1 flex flex-col max-w-3xl mx-auto w-full min-h-0">
+      <div className="relative flex-1 flex flex-col max-w-lg mx-auto w-full min-h-0">
         {/* Header */}
         <header className="text-center mb-2 animate-slide-up flex-shrink-0">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-1.5">

@@ -199,7 +199,7 @@ const KYCForm = () => {
 
   return (
     <>
-      <div className="w-full max-w-2xl mx-auto h-full flex flex-col">
+      <div className="w-full max-w-md mx-auto h-full flex flex-col">
         <StepIndicator currentStep={currentStep} steps={steps} />
 
         <div className="bg-card rounded-xl shadow-xl p-3 md:p-4 hover-lift flex-1 flex flex-col min-h-0">
