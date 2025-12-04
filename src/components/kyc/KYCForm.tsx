@@ -202,7 +202,7 @@ const KYCForm = () => {
       <div className="w-full max-w-2xl mx-auto h-full flex flex-col">
         <StepIndicator currentStep={currentStep} steps={steps} />
 
-        <div className="bg-card rounded-2xl shadow-xl p-4 md:p-6 hover-lift flex-1 flex flex-col min-h-0 overflow-auto">
+        <div className="bg-card rounded-xl shadow-xl p-3 md:p-4 hover-lift flex-1 flex flex-col min-h-0">
           {currentStep === 0 && (
             <PersonalInfoStep
               formData={formData}
@@ -226,37 +226,37 @@ const KYCForm = () => {
             />
           )}
 
-          <div className="flex justify-between mt-8 pt-6 border-t border-border">
+          <div className="flex justify-between mt-4 pt-3 border-t border-border">
             <Button
               variant="outline"
               onClick={handlePrevious}
               disabled={currentStep === 0}
-              className="gap-2"
+              className="gap-1 h-8 text-sm"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-3 h-3" />
               Previous
             </Button>
 
             {currentStep < steps.length - 1 ? (
-              <Button onClick={handleNext} className="gap-2">
+              <Button onClick={handleNext} className="gap-1 h-8 text-sm">
                 Next
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3 h-3" />
               </Button>
             ) : (
               <Button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="gap-2 bg-gradient-primary hover:opacity-90"
+                className="gap-1 h-8 text-sm bg-gradient-primary hover:opacity-90"
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-3 h-3 animate-spin" />
                     Submitting...
                   </>
                 ) : (
                   <>
                     Submit KYC
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-3 h-3" />
                   </>
                 )}
               </Button>
