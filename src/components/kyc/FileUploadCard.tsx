@@ -12,6 +12,7 @@ interface FileUploadCardProps {
   onFileChange: (file: File | null) => void;
   error?: string;
   isCamera?: boolean;
+  disabled?: boolean;
 }
 
 const FileUploadCard = ({
@@ -24,6 +25,7 @@ const FileUploadCard = ({
   onFileChange,
   error,
   isCamera = false,
+  disabled = false,
 }: FileUploadCardProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -49,16 +51,17 @@ const FileUploadCard = ({
   return (
     <div
       className={cn(
-        "relative group rounded-xl border-2 border-dashed p-6 transition-all duration-300 hover-lift cursor-pointer",
+        "relative group rounded-xl border-2 border-dashed p-4 transition-all duration-300 cursor-pointer",
         isDragging && "border-primary bg-primary/5 scale-[1.02]",
         file && "border-success bg-success/5",
         error && "border-destructive bg-destructive/5",
-        !file && !error && !isDragging && "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
+        disabled && "opacity-50 cursor-not-allowed pointer-events-none",
+        !file && !error && !isDragging && !disabled && "border-border bg-card hover:border-primary/50 hover:bg-primary/5 hover-lift"
       )}
-      onDrop={handleDrop}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onClick={() => inputRef.current?.click()}
+      onDrop={disabled ? undefined : handleDrop}
+      onDragOver={disabled ? undefined : handleDragOver}
+      onDragLeave={disabled ? undefined : handleDragLeave}
+      onClick={() => !disabled && inputRef.current?.click()}
     >
       <input
         ref={inputRef}
@@ -79,7 +82,7 @@ const FileUploadCard = ({
           <img
             src={preview}
             alt={title}
-            className="w-full h-40 object-cover rounded-lg"
+            className="w-full h-28 object-cover rounded-lg"
           />
           <button
             onClick={(e) => {
@@ -95,22 +98,18 @@ const FileUploadCard = ({
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center text-center space-y-3">
+        <div className="flex flex-col items-center text-center space-y-2">
           <div
             className={cn(
-              "w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300",
+              "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300",
               isDragging ? "bg-primary text-primary-foreground scale-110" : "bg-muted text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground"
             )}
           >
             {icon}
           </div>
           <div>
-            <p className="font-semibold text-foreground">{title}</p>
-            <p className="text-sm text-muted-foreground">{description}</p>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Upload className="w-3 h-3" />
-            <span>Click or drag to upload</span>
+            <p className="font-semibold text-foreground text-sm">{title}</p>
+            <p className="text-xs text-muted-foreground">{description}</p>
           </div>
         </div>
       )}

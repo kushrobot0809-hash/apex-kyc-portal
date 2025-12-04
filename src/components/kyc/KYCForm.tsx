@@ -119,10 +119,14 @@ const KYCForm = () => {
     }
 
     if (step === 2) {
-      if (!files.passportPhoto) newErrors.passportPhoto = "Passport photo is required";
-      if (!files.aadharCard) newErrors.aadharCard = "Aadhar card is required";
-      if (!files.liveSelfie) newErrors.liveSelfie = "Live selfie is required";
-      if (!files.galleryPhoto) newErrors.galleryPhoto = "Gallery photo is required";
+      // Either passport photo OR aadhar card is required
+      if (!files.passportPhoto && !files.aadharCard) {
+        newErrors.idDocument = "Please upload either Passport Photo or Aadhar Card";
+      }
+      // Either live selfie OR gallery photo is required
+      if (!files.liveSelfie && !files.galleryPhoto) {
+        newErrors.photoDocument = "Please upload either Live Selfie or Gallery Photo";
+      }
     }
 
     setErrors(newErrors);
@@ -195,10 +199,10 @@ const KYCForm = () => {
 
   return (
     <>
-      <div className="w-full max-w-2xl mx-auto">
+      <div className="w-full max-w-2xl mx-auto h-full flex flex-col">
         <StepIndicator currentStep={currentStep} steps={steps} />
 
-        <div className="bg-card rounded-2xl shadow-xl p-6 md:p-8 hover-lift">
+        <div className="bg-card rounded-2xl shadow-xl p-4 md:p-6 hover-lift flex-1 flex flex-col min-h-0 overflow-auto">
           {currentStep === 0 && (
             <PersonalInfoStep
               formData={formData}
@@ -242,8 +246,7 @@ const KYCForm = () => {
               <Button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                variant="success"
-                className="gap-2"
+                className="gap-2 bg-gradient-primary hover:opacity-90"
               >
                 {isSubmitting ? (
                   <>
