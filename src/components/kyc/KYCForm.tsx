@@ -28,8 +28,6 @@ interface FormData {
 
 interface FileData {
   passportPhoto: File | null;
-  liveSelfie: File | null;
-  galleryPhoto: File | null;
 }
 
 const KYCForm = () => {
@@ -50,14 +48,10 @@ const KYCForm = () => {
 
   const [files, setFiles] = useState<FileData>({
     passportPhoto: null,
-    liveSelfie: null,
-    galleryPhoto: null,
   });
 
   const [previews, setPreviews] = useState({
     passportPhoto: null as string | null,
-    liveSelfie: null as string | null,
-    galleryPhoto: null as string | null,
   });
 
   const [solutions, setSolutions] = useState({
@@ -137,14 +131,7 @@ const KYCForm = () => {
     }
 
     if (step === 2) {
-      // Passport photo is required
-      if (!files.passportPhoto) {
-        newErrors.passportPhoto = "Please upload Passport Photo";
-      }
-      // Either live selfie OR gallery photo is required
-      if (!files.liveSelfie && !files.galleryPhoto) {
-        newErrors.photoDocument = "Please upload either Live Selfie or Gallery Photo";
-      }
+      // No validation - passport photo is optional
     }
 
     if (step === 3) {
@@ -211,13 +198,9 @@ const KYCForm = () => {
     });
     setFiles({
       passportPhoto: null,
-      liveSelfie: null,
-      galleryPhoto: null,
     });
     setPreviews({
       passportPhoto: null,
-      liveSelfie: null,
-      galleryPhoto: null,
     });
     setSolutions({
       whiteLabel: false,
