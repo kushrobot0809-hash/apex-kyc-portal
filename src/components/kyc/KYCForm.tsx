@@ -226,19 +226,19 @@ const KYCForm = () => {
             />
           )}
 
-          <div className="flex justify-between mt-4 pt-3 border-t border-border">
+          <div className="flex justify-between mt-auto pt-3 border-t border-border flex-shrink-0">
             <Button
               variant="outline"
               onClick={handlePrevious}
               disabled={currentStep === 0}
-              className="gap-1 h-8 text-sm"
+              className="gap-1 h-7 text-xs px-3"
             >
               <ArrowLeft className="w-3 h-3" />
               Previous
             </Button>
 
             {currentStep < steps.length - 1 ? (
-              <Button onClick={handleNext} className="gap-1 h-8 text-sm">
+              <Button onClick={handleNext} className="gap-1 h-7 text-xs px-3">
                 Next
                 <ArrowRight className="w-3 h-3" />
               </Button>
@@ -246,7 +246,7 @@ const KYCForm = () => {
               <Button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="gap-1 h-8 text-sm bg-gradient-primary hover:opacity-90"
+                className="gap-1 h-7 text-xs px-3 bg-gradient-primary hover:opacity-90"
               >
                 {isSubmitting ? (
                   <>

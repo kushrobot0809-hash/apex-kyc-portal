@@ -51,22 +51,20 @@ const LiveSelfieCard = ({ file, preview, onFileChange, error, disabled = false }
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center text-center gap-1">
+          <div className="flex items-center justify-center gap-3 py-1">
             <div className="relative">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 bg-muted text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-primary/10 text-primary">
                 <Camera className="w-4 h-4" />
               </div>
               <div className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-destructive flex items-center justify-center animate-pulse">
                 <Video className="w-1.5 h-1.5 text-destructive-foreground" />
               </div>
             </div>
-            <div>
+            <div className="text-left">
               <p className="font-medium text-foreground text-xs">Live Selfie</p>
-              <p className="text-[9px] text-muted-foreground">Take a live photo</p>
-            </div>
-            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary text-[9px] font-medium">
-              <Camera className="w-2.5 h-2.5" />
-              <span>Open Camera</span>
+              <button className="text-[9px] text-primary hover:underline flex items-center gap-0.5">
+                <Camera className="w-2.5 h-2.5" /> Tap to open camera
+              </button>
             </div>
           </div>
         )}
