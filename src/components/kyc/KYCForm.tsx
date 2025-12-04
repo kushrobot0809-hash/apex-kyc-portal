@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { User, Building2, FileCheck, Package, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import StepIndicator from "./StepIndicator";
@@ -38,7 +36,7 @@ const KYCForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [webhookUrl, setWebhookUrl] = useState("");
+  const [webhookUrl] = useState("https://script.google.com/macros/s/AKfycbwfH9-5Q7P48wy79Z_IV0YJplWfcXoI9IN2GP8Kv_lSiJ-7g0pRAvrXdDtUcC3Djnzr/exec");
 
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -288,24 +286,6 @@ const KYCForm = () => {
             />
           )}
 
-          {currentStep === 3 && (
-            <div className="mt-4 p-3 bg-muted/50 rounded-lg">
-              <Label htmlFor="webhookUrl" className="text-xs font-medium">
-                Google Apps Script Webhook URL *
-              </Label>
-              <Input
-                id="webhookUrl"
-                type="url"
-                placeholder="https://script.google.com/macros/s/..."
-                value={webhookUrl}
-                onChange={(e) => setWebhookUrl(e.target.value)}
-                className="mt-1 h-8 text-xs"
-              />
-              <p className="text-[10px] text-muted-foreground mt-1">
-                Enter your Google Apps Script webhook URL to save data to Google Sheets
-              </p>
-            </div>
-          )}
 
           <div className="flex justify-between mt-auto pt-3 border-t border-border flex-shrink-0">
             <Button
