@@ -1,0 +1,4 @@
+project_id = "sgzggproxadempphiecy"
+
+[functions.submit-kyc-to-sheets]
+verify_jwt = false

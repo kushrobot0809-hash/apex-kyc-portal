@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { User, Building2, FileCheck, Package, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import StepIndicator from "./StepIndicator";
 import PersonalInfoStep from "./PersonalInfoStep";
 import OrganizationStep from "./OrganizationStep";
@@ -35,6 +38,7 @@ const KYCForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [webhookUrl, setWebhookUrl] = useState("");
 
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -168,19 +172,50 @@ const KYCForm = () => {
   };
 
   const handleSubmit = async () => {
+    if (!webhookUrl.trim()) {
+      toast.error("Please enter Google Apps Script webhook URL");
+      return;
+    }
+
     if (validateStep(currentStep)) {
       setIsSubmitting(true);
       
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      
-      setIsSubmitting(false);
-      setShowSuccess(true);
-      toast.success("KYC Submitted Successfully!", {
-        description: "We'll review your documents shortly",
-      });
+      try {
+        const { data, error } = await supabase.functions.invoke("submit-kyc-to-sheets", {
+          body: {
+            webhookUrl,
+            personalInfo: {
+              name: formData.name,
+              email: formData.email,
+              phone: formData.phone,
+              address: formData.address,
+            },
+            organization: {
+              companyName: formData.companyName,
+              companyWebsite: formData.companyWebsite,
+              companyEmail: formData.companyEmail,
+            },
+            solutions,
+            hasPassportPhoto: !!files.passportPhoto,
+          },
+        });
+
+        if (error) throw error;
+
+        setShowSuccess(true);
+        toast.success("KYC Submitted Successfully!", {
+          description: "Data saved to Google Sheets",
+        });
+      } catch (error: any) {
+        console.error("Submit error:", error);
+        toast.error("Failed to submit KYC", {
+          description: error.message || "Please try again",
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     } else {
-      toast.error("Please upload all required documents");
+      toast.error("Please select at least one solution");
     }
   };
 
@@ -251,6 +286,25 @@ const KYCForm = () => {
               solutions={solutions}
               onChange={handleSolutionChange}
             />
+          )}
+
+          {currentStep === 3 && (
+            <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+              <Label htmlFor="webhookUrl" className="text-xs font-medium">
+                Google Apps Script Webhook URL *
+              </Label>
+              <Input
+                id="webhookUrl"
+                type="url"
+                placeholder="https://script.google.com/macros/s/..."
+                value={webhookUrl}
+                onChange={(e) => setWebhookUrl(e.target.value)}
+                className="mt-1 h-8 text-xs"
+              />
+              <p className="text-[10px] text-muted-foreground mt-1">
+                Enter your Google Apps Script webhook URL to save data to Google Sheets
+              </p>
+            </div>
           )}
 
           <div className="flex justify-between mt-auto pt-3 border-t border-border flex-shrink-0">
