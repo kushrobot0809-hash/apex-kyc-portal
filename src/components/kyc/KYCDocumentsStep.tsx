@@ -1,18 +1,16 @@
+import { FileCheck, User, Camera, Image, Check } from "lucide-react";
 import { useState } from "react";
-import { FileCheck, CreditCard, Image, User, Camera, Check } from "lucide-react";
 import FileUploadCard from "./FileUploadCard";
 import LiveSelfieCard from "./LiveSelfieCard";
 
 interface KYCDocumentsStepProps {
   files: {
     passportPhoto: File | null;
-    aadharCard: File | null;
     liveSelfie: File | null;
     galleryPhoto: File | null;
   };
   previews: {
     passportPhoto: string | null;
-    aadharCard: string | null;
     liveSelfie: string | null;
     galleryPhoto: string | null;
   };
@@ -20,25 +18,12 @@ interface KYCDocumentsStepProps {
   onFileChange: (field: string, file: File | null) => void;
 }
 
-type IdProofType = "passport" | "aadhar" | null;
 type PhotoType = "selfie" | "gallery" | null;
 
 const KYCDocumentsStep = ({ files, previews, errors, onFileChange }: KYCDocumentsStepProps) => {
-  const [selectedIdProof, setSelectedIdProof] = useState<IdProofType>(
-    files.passportPhoto ? "passport" : files.aadharCard ? "aadhar" : null
-  );
   const [selectedPhoto, setSelectedPhoto] = useState<PhotoType>(
     files.liveSelfie ? "selfie" : files.galleryPhoto ? "gallery" : null
   );
-
-  const handleIdProofSelect = (type: IdProofType) => {
-    setSelectedIdProof(type);
-    if (type === "passport" && files.aadharCard) {
-      onFileChange("aadharCard", null);
-    } else if (type === "aadhar" && files.passportPhoto) {
-      onFileChange("passportPhoto", null);
-    }
-  };
 
   const handlePhotoSelect = (type: PhotoType) => {
     setSelectedPhoto(type);
@@ -62,89 +47,23 @@ const KYCDocumentsStep = ({ files, previews, errors, onFileChange }: KYCDocument
 
       {/* Content */}
       <div className="flex-1 space-y-3 overflow-hidden">
-        {/* ID Proof Section */}
+        {/* Passport Photo Section */}
         <div className="space-y-1.5">
           <p className="text-[11px] font-medium text-foreground flex items-center gap-1.5">
             <span className="w-4 h-4 rounded-full bg-primary/20 text-primary text-[9px] flex items-center justify-center font-bold">1</span>
-            Upload ID Proof (Passport Photo OR Aadhar Card)
+            Upload Passport Photo
           </p>
           
-          {!selectedIdProof ? (
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => handleIdProofSelect("passport")}
-                className="group p-2 rounded-lg border border-dashed border-border bg-card hover:border-primary/50 hover:bg-primary/5 transition-all"
-              >
-                <div className="flex flex-col items-center text-center gap-1">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-muted text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                    <User className="w-4 h-4" />
-                  </div>
-                  <p className="font-medium text-foreground text-xs">Passport Photo</p>
-                  <p className="text-[9px] text-muted-foreground leading-tight">Upload passport size photo</p>
-                </div>
-              </button>
-
-              <button
-                onClick={() => handleIdProofSelect("aadhar")}
-                className="group p-2 rounded-lg border border-dashed border-border bg-card hover:border-primary/50 hover:bg-primary/5 transition-all"
-              >
-                <div className="flex flex-col items-center text-center gap-1">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-muted text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                    <CreditCard className="w-4 h-4" />
-                  </div>
-                  <p className="font-medium text-foreground text-xs">Aadhar Card</p>
-                  <p className="text-[9px] text-muted-foreground leading-tight">Upload front side of Aadhar</p>
-                </div>
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] text-success flex items-center gap-1">
-                  <Check className="w-3 h-3" />
-                  {selectedIdProof === "passport" ? "Passport Photo" : "Aadhar Card"}
-                </span>
-                <button 
-                  onClick={() => {
-                    setSelectedIdProof(null);
-                    onFileChange("passportPhoto", null);
-                    onFileChange("aadharCard", null);
-                  }}
-                  className="text-[10px] text-primary hover:underline"
-                >
-                  Change
-                </button>
-              </div>
-              
-              {selectedIdProof === "passport" ? (
-                <FileUploadCard
-                  title="Passport Photo"
-                  description="Upload passport size photo"
-                  icon={<User className="w-4 h-4" />}
-                  accept="image/*"
-                  file={files.passportPhoto}
-                  preview={previews.passportPhoto}
-                  onFileChange={(file) => onFileChange("passportPhoto", file)}
-                  error={errors.idDocument}
-                />
-              ) : (
-                <FileUploadCard
-                  title="Aadhar Card"
-                  description="Upload front side of Aadhar"
-                  icon={<CreditCard className="w-4 h-4" />}
-                  accept="image/*,.pdf"
-                  file={files.aadharCard}
-                  preview={previews.aadharCard}
-                  onFileChange={(file) => onFileChange("aadharCard", file)}
-                  error={errors.idDocument}
-                />
-              )}
-            </div>
-          )}
-          
-          {!selectedIdProof && errors.idDocument && (
-            <p className="text-[10px] text-destructive">{errors.idDocument}</p>
-          )}
+          <FileUploadCard
+            title="Passport Photo"
+            description="Upload passport size photo"
+            icon={<User className="w-4 h-4" />}
+            accept="image/*"
+            file={files.passportPhoto}
+            preview={previews.passportPhoto}
+            onFileChange={(file) => onFileChange("passportPhoto", file)}
+            error={errors.passportPhoto}
+          />
         </div>
 
         {/* Photo Section */}

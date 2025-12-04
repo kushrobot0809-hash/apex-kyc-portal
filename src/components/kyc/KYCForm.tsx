@@ -28,7 +28,6 @@ interface FormData {
 
 interface FileData {
   passportPhoto: File | null;
-  aadharCard: File | null;
   liveSelfie: File | null;
   galleryPhoto: File | null;
 }
@@ -51,14 +50,12 @@ const KYCForm = () => {
 
   const [files, setFiles] = useState<FileData>({
     passportPhoto: null,
-    aadharCard: null,
     liveSelfie: null,
     galleryPhoto: null,
   });
 
   const [previews, setPreviews] = useState({
     passportPhoto: null as string | null,
-    aadharCard: null as string | null,
     liveSelfie: null as string | null,
     galleryPhoto: null as string | null,
   });
@@ -140,9 +137,9 @@ const KYCForm = () => {
     }
 
     if (step === 2) {
-      // Either passport photo OR aadhar card is required
-      if (!files.passportPhoto && !files.aadharCard) {
-        newErrors.idDocument = "Please upload either Passport Photo or Aadhar Card";
+      // Passport photo is required
+      if (!files.passportPhoto) {
+        newErrors.passportPhoto = "Please upload Passport Photo";
       }
       // Either live selfie OR gallery photo is required
       if (!files.liveSelfie && !files.galleryPhoto) {
@@ -214,13 +211,11 @@ const KYCForm = () => {
     });
     setFiles({
       passportPhoto: null,
-      aadharCard: null,
       liveSelfie: null,
       galleryPhoto: null,
     });
     setPreviews({
       passportPhoto: null,
-      aadharCard: null,
       liveSelfie: null,
       galleryPhoto: null,
     });
