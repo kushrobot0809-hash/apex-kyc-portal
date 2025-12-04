@@ -54,7 +54,7 @@ const FileUploadCard = ({
         "relative group rounded-lg border border-dashed p-2 transition-all duration-300 cursor-pointer",
         isDragging && "border-primary bg-primary/5 scale-[1.02]",
         file && "border-success bg-success/5",
-        error && "border-destructive bg-destructive/5",
+        error && !file && "border-destructive bg-destructive/5",
         disabled && "opacity-50 cursor-not-allowed pointer-events-none",
         !file && !error && !isDragging && !disabled && "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
       )}
@@ -78,43 +78,47 @@ const FileUploadCard = ({
       />
 
       {preview ? (
-        <div className="relative">
+        <div className="relative flex items-center gap-2">
           <img
             src={preview}
             alt={title}
-            className="w-full h-20 object-cover rounded"
+            className="w-12 h-12 object-cover rounded flex-shrink-0"
           />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-foreground truncate">{title}</p>
+            <div className="flex items-center gap-1 text-success">
+              <Check className="w-3 h-3" />
+              <span className="text-[10px]">Uploaded</span>
+            </div>
+          </div>
           <button
             onClick={(e) => {
               e.stopPropagation();
               onFileChange(null);
             }}
-            className="absolute top-1 right-1 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:scale-110 transition-transform"
+            className="w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:scale-110 transition-transform flex-shrink-0"
           >
             <X className="w-3 h-3" />
           </button>
-          <div className="absolute bottom-1 left-1 bg-success text-success-foreground px-2 py-0.5 rounded-full text-[9px] font-medium flex items-center gap-0.5">
-            <Check className="w-2 h-2" /> Uploaded
-          </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center text-center gap-1">
+        <div className="flex items-center gap-2 py-1">
           <div
             className={cn(
-              "w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300",
+              "w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0",
               isDragging ? "bg-primary text-primary-foreground scale-110" : "bg-muted text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground"
             )}
           >
             {icon}
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="font-medium text-foreground text-xs">{title}</p>
-            <p className="text-[9px] text-muted-foreground">{description}</p>
+            <p className="text-[9px] text-muted-foreground truncate">{description}</p>
           </div>
         </div>
       )}
 
-      {error && (
+      {error && !file && (
         <p className="text-[9px] text-destructive mt-1 text-center">{error}</p>
       )}
     </div>
