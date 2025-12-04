@@ -8,7 +8,7 @@ interface StepIndicatorProps {
 
 const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
   return (
-    <div className="flex items-center justify-center gap-2 md:gap-4 mb-8">
+    <div className="flex items-center justify-center gap-1 md:gap-2 mb-3">
       {steps.map((step, index) => {
         const isCompleted = index < currentStep;
         const isActive = index === currentStep;
@@ -18,16 +18,16 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
             <div className="flex flex-col items-center">
               <div
                 className={cn(
-                  "w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-all duration-500 relative",
+                  "w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-500 relative",
                   isCompleted && "bg-gradient-primary text-primary-foreground shadow-glow",
                   isActive && "bg-gradient-primary text-primary-foreground shadow-glow animate-pulse-slow",
                   !isCompleted && !isActive && "bg-muted text-muted-foreground"
                 )}
               >
                 {isCompleted ? (
-                  <Check className="w-6 h-6 animate-bounce-in" />
+                  <Check className="w-4 h-4 animate-bounce-in" />
                 ) : (
-                  <span className="text-current">{step.icon}</span>
+                  <span className="text-current scale-75">{step.icon}</span>
                 )}
                 {isActive && (
                   <span className="absolute -inset-1 rounded-full bg-gradient-primary opacity-30 animate-ping" />
@@ -35,7 +35,7 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
               </div>
               <span
                 className={cn(
-                  "mt-2 text-xs md:text-sm font-medium transition-colors duration-300 text-center max-w-[80px]",
+                  "mt-1 text-[10px] md:text-xs font-medium transition-colors duration-300 text-center max-w-[60px]",
                   (isCompleted || isActive) ? "text-primary" : "text-muted-foreground"
                 )}
               >
@@ -45,7 +45,7 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
             {index < steps.length - 1 && (
               <div
                 className={cn(
-                  "w-8 md:w-16 h-1 mx-2 rounded-full transition-all duration-500",
+                  "w-6 md:w-10 h-0.5 mx-1 rounded-full transition-all duration-500",
                   index < currentStep ? "bg-gradient-primary" : "bg-muted"
                 )}
               />
