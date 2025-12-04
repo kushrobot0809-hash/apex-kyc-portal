@@ -1,5 +1,6 @@
-import { FileCheck, Camera, CreditCard, Image, User } from "lucide-react";
+import { FileCheck, CreditCard, Image, User } from "lucide-react";
 import FileUploadCard from "./FileUploadCard";
+import LiveSelfieCard from "./LiveSelfieCard";
 
 interface KYCDocumentsStepProps {
   files: {
@@ -52,16 +53,11 @@ const KYCDocumentsStep = ({ files, previews, errors, onFileChange }: KYCDocument
           error={errors.aadharCard}
         />
 
-        <FileUploadCard
-          title="Live Selfie"
-          description="Take a live selfie for verification"
-          icon={<Camera className="w-6 h-6" />}
-          accept="image/*"
+        <LiveSelfieCard
           file={files.liveSelfie}
           preview={previews.liveSelfie}
           onFileChange={(file) => onFileChange("liveSelfie", file)}
           error={errors.liveSelfie}
-          isCamera={true}
         />
 
         <FileUploadCard
