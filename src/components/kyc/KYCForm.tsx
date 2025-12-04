@@ -1,17 +1,19 @@
 import { useState } from "react";
-import { User, Building2, FileCheck, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
+import { User, Building2, FileCheck, Package, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import StepIndicator from "./StepIndicator";
 import PersonalInfoStep from "./PersonalInfoStep";
 import OrganizationStep from "./OrganizationStep";
 import KYCDocumentsStep from "./KYCDocumentsStep";
+import SolutionsStep from "./SolutionsStep";
 import SuccessModal from "./SuccessModal";
 
 const steps = [
   { title: "Personal Info", icon: <User className="w-6 h-6" /> },
   { title: "Organization", icon: <Building2 className="w-6 h-6" /> },
   { title: "KYC Documents", icon: <FileCheck className="w-6 h-6" /> },
+  { title: "Solutions", icon: <Package className="w-6 h-6" /> },
 ];
 
 interface FormData {
@@ -60,6 +62,25 @@ const KYCForm = () => {
     liveSelfie: null as string | null,
     galleryPhoto: null as string | null,
   });
+
+  const [solutions, setSolutions] = useState({
+    whiteLabel: false,
+    exchange: false,
+    casinoGames: false,
+    customGame: false,
+    paymentGateway: false,
+    fraudDetection: false,
+    exchangeApi: false,
+    mobileApps: false,
+    liveDealer: false,
+    regulatory: false,
+    customPayment: false,
+    devTeam: false,
+  });
+
+  const handleSolutionChange = (field: string, value: boolean) => {
+    setSolutions((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleFormChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -129,6 +150,14 @@ const KYCForm = () => {
       }
     }
 
+    if (step === 3) {
+      // At least one solution must be selected
+      const hasAnySolution = Object.values(solutions).some((v) => v);
+      if (!hasAnySolution) {
+        newErrors.solutions = "Please select at least one solution";
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -195,6 +224,20 @@ const KYCForm = () => {
       liveSelfie: null,
       galleryPhoto: null,
     });
+    setSolutions({
+      whiteLabel: false,
+      exchange: false,
+      casinoGames: false,
+      customGame: false,
+      paymentGateway: false,
+      fraudDetection: false,
+      exchangeApi: false,
+      mobileApps: false,
+      liveDealer: false,
+      regulatory: false,
+      customPayment: false,
+      devTeam: false,
+    });
   };
 
   return (
@@ -223,6 +266,12 @@ const KYCForm = () => {
               previews={previews}
               errors={errors}
               onFileChange={handleFileChange}
+            />
+          )}
+          {currentStep === 3 && (
+            <SolutionsStep
+              solutions={solutions}
+              onChange={handleSolutionChange}
             />
           )}
 
